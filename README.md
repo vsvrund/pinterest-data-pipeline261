@@ -5,7 +5,6 @@
 2. [Installation Instructions](#installation-instructions)
 3. [Usage Instructions](#usage-instructions)
 4. [File Structure](#file-structure)
-5. [License](#license)
 
 ## Description <a name="description"></a>
 This project aims to set up a development environment mimicking the infrastructure of a Pinterest-like system using AWS services and integrating with Kafka. The primary goal is to familiarize users with AWS setup, EC2 instances, and working with MSK clusters for Kafka.
@@ -45,6 +44,32 @@ This project aims to set up a development environment mimicking the infrastructu
   - `bin/`
     - `client.properties`
 
-### License Information <a name="license"></a>
-This project is licensed under the [insert your chosen license] License.
+   
+## Setting up S3 Bucket and MSK Connect
+
+### Step 7: S3 Bucket Configuration
+1. Go to the S3 console and locate the bucket containing your UserId in the format: `user-<your_UserId>-bucket`.
+2. Note the bucket name for use in subsequent steps.
+
+### Step 8: Confluent.io Amazon S3 Connector Setup
+1. On your EC2 client, download the Confluent.io Amazon S3 Connector.
+2. Copy the downloaded connector to the previously identified S3 bucket.
+
+### Step 9: Creating Custom Plugin and Connector in MSK Connect Console
+1. Access the MSK Connect console.
+2. Create a custom plugin with the name: `<your_UserId>-plugin`.
+3. Create a connector with the name: `<your_UserId>-connector`.
+4. Configure the connector using the following settings:
+   - **Bucket Name:** `user-<your_UserId>-bucket`
+   - **topics.regex Field:** `<your_UserId>.*`
+   - **Access Permissions:** Choose the IAM role used for MSK cluster authentication (`<your_UserId>-ec2-access-role`).
+5. Ensure that the connector is associated with the appropriate plugin.
+
+### Step 10: Data Storage in S3 Bucket
+By building the plugin-connector pair, any data passing through the IAM-authenticated MSK cluster will be automatically stored in the designated S3 bucket (`user-<your_UserId>-bucket`).
+
+
+
+
+
 
