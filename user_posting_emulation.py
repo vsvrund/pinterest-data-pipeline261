@@ -6,6 +6,8 @@ import boto3
 import json
 import sqlalchemy
 from sqlalchemy import text
+import datetime
+
 
 
 random.seed(100)
@@ -56,34 +58,62 @@ def run_infinite_post_data_loop():
                 user_result = dict(row._mapping)
 
 
+            pin_result = {k: str(v) if isinstance(v, datetime.datetime) else v for k, v in pin_result.items()}
+            geo_result = {k: v.strftime("%Y-%m-%d %H:%M:%S") if isinstance(v, datetime.datetime) else v for k, v in geo_result.items()}
+            user_result = {k: str(v) if isinstance(v, datetime.datetime) else v for k, v in user_result.items()}
+
+
+
+            
             example_df = {"index": 1, "name": "Maya", "age": 25, "role": "engineer"}
 
-invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev"
-#To send JSON messages you need to follow this structure
-payload = json.dumps({
-    "records": [
-        {
-        #Data should be send as pairs of column_name:value, with different columns separated by commas       
-        "value": {"index": 2, "name": "Vrund", "age": 23, "role": "engineer"}
-        }
-    ]
-})
+            invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/topics/0a1e5630c127.pin"
+            #To send JSON messages you need to follow this structure
+            payload = json.dumps({
+                "records": [
+                    {
+                    #Data should be send as pairs of column_name:value, with different columns separated by commas       
+                    "value": pin_result
+                    }
+                ]
+            })
+            headers = {'Content-Type': 'application/vnd.kafka.json.v2+json'}
+            response = requests.request("POST", invoke_url, headers=headers, data=payload)
 
-headers = {'Content-Type': 'application/vnd.kafka.json.v2+json'}
-response = requests.request("POST", invoke_url, headers=headers, data=payload)
+
+
+            invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/topics/0a1e5630c127.geo"
+            payload = json.dumps({
+                "records": [
+                    {
+                    #Data should be send as pairs of column_name:value, with different columns separated by commas       
+                    "value": geo_result
+                    }
+                ]
+            })
+            headers = {'Content-Type': 'application/vnd.kafka.json.v2+json'}
+            response = requests.request("POST", invoke_url, headers=headers, data=payload)
+
+            invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/topics/0a1e5630c127.user"
+            payload = json.dumps({
+                "records": [
+                    {
+                    #Data should be send as pairs of column_name:value, with different columns separated by commas       
+                    "value": user_result
+                    }
+                ]
+            })
             
-print(pin_result)
-print(geo_result)
-print(user_result)
+            headers = {'Content-Type': 'application/vnd.kafka.json.v2+json'}
+            response = requests.request("POST", invoke_url, headers=headers, data=payload)
+            print(response)            
+            #print(pin_result)
+            #print(geo_result)
+            #print(user_result)
 
 
 if __name__ == "__main__":
     run_infinite_post_data_loop()
     print('Working')
     
-
-
-
-print("Pinterest Data:", pin_result)
-print("Geolocation Data:", geo_result)
-print("User Data:", user_result)
+ 
