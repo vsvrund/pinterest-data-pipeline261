@@ -1,75 +1,129 @@
-# Pinterest-Data-Pipeline
+# Pinterest Data Pipeline (Data and Cloud Engineering)
 
-## Table of Contents
-1. [Description](#description)
-2. [Installation Instructions](#installation-instructions)
-3. [Usage Instructions](#usage-instructions)
-4. [File Structure](#file-structure)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
-## Description <a name="description"></a>
-This project aims to set up a development environment mimicking the infrastructure of a Pinterest-like system using AWS services and integrating with Kafka. The primary goal is to familiarize users with AWS setup, EC2 instances, and working with MSK clusters for Kafka.
+## Overview 
+> - Pinterest crunches billions of data points every day to decide how to provide more value to their users.
+> - The goal of this project will be to simulate the pipeline implemented by Pinterest with both Batch and Stream Processing which will involve a host of various AWS software platforms.
 
-### Project Overview
-- **GitHub Repository Setup:** Guides users through creating a new repository to track code changes on GitHub.
-- **AWS Account Setup:** Instructions for creating an AWS account, accessing an EC2 instance, and configuring IAM roles for MSK cluster authentication.
-- **Kafka Client Configuration:** Details on installing Kafka and setting up IAM authentication to communicate with the MSK cluster.
+## Learning Objectives
+> - To implement a data pipeline using AWS.
+> - To process Batch and Stream data.
+> - To conduct cleaning and analysis on the processed data.
 
-## Installation Instructions <a name="installation-instructions"></a>
-### Step-by-Step Setup Guide
-#### Step 1: GitHub Repository Setup
-1. Click the button on the right to create a new GitHub repository.
+## Project Structure
 
-#### Step 2: AWS Account and EC2 Instance Setup
-1. Go to [AWS Console](https://aws.amazon.com/) and sign in using the provided credentials.
-2. Change the password as prompted and note your UserId.
+### Milestone 1 - "Batch Processing: Configure the EC2 Kafka client."
+> - Create .pem key file and connect to EC2 Instance
+> - Set up Kafka and topics from EC2 instance
 
-#### Step 3: Key Pair Configuration for EC2 Instance
-1. Access Parameter Store in your AWS account and retrieve the specific key pair associated with your EC2 instance.
-2. Save the key pair content in a `.pem` file.
+### Milestone 2 - "Batch Processing: Connect a MSK cluster to a S3 Bucket."
+> - Create a custom plugin, MSK Connect
+> - Create a connector, MSK Connect
 
-#### Step 4: Connecting to EC2 Instance
-1. Follow the instructions in the EC2 console under "Connect" (SSH client) to connect to your EC2 instance.
+### Milestone 3 - "Batch Processing: Configuring an API in API Gateway."
+> - Build a Kafka REST proxy intergration method for the API
+> - Set up Kafka REST proxy on EC2 instance
+> - Send data to the API
 
-#### Step 5: Configuring Kafka Client for MSK Cluster
-1. Install Kafka (version 2.12-2.8.1) and the IAM MSK authentication package on your client EC2 machine.
-2. Access IAM console, edit the trust policy, and configure `client.properties` for AWS IAM authentication.
+### Milestone 4 - "Batch Processing: Databricks."
+> - Set up Databricks
+> - Mount an S3 bucket
 
-#### Step 6: Creating Kafka Topics on MSK Cluster
-1. Retrieve Bootstrap servers and Zookeeper connection strings from the MSK Management Console.
-2. Create three topics as specified for Pinterest-like data.
+### Milestone 5 - "Batch Processing: Spark on Databricks."
+> - Clean the Dataframes
+> - Querying the Dataframes with SQL and Pyspark
 
-## Usage Instructions <a name="usage-instructions"></a>
-### File Structure
-- `kafka_folder/`
-  - `bin/`
-    - `client.properties`
+### Milestone 6 - "Batch Processing: AWS MWAA."
+> - Create and upload DAG to MWAA
+> - Trigger DAG
 
-   
-## Setting up S3 Bucket and MSK Connect
-
-### Step 7: S3 Bucket Configuration
-1. Go to the S3 console and locate the bucket containing your UserId in the format: `user-<your_UserId>-bucket`.
-2. Note the bucket name for use in subsequent steps.
-
-### Step 8: Confluent.io Amazon S3 Connector Setup
-1. On your EC2 client, download the Confluent.io Amazon S3 Connector.
-2. Copy the downloaded connector to the previously identified S3 bucket.
-
-### Step 9: Creating Custom Plugin and Connector in MSK Connect Console
-1. Access the MSK Connect console.
-2. Create a custom plugin with the name: `<your_UserId>-plugin`.
-3. Create a connector with the name: `<your_UserId>-connector`.
-4. Configure the connector using the following settings:
-   - **Bucket Name:** `user-<your_UserId>-bucket`
-   - **topics.regex Field:** `<your_UserId>.*`
-   - **Access Permissions:** Choose the IAM role used for MSK cluster authentication (`<your_UserId>-ec2-access-role`).
-5. Ensure that the connector is associated with the appropriate plugin.
-
-### Step 10: Data Storage in S3 Bucket
-By building the plugin-connector pair, any data passing through the IAM-authenticated MSK cluster will be automatically stored in the designated S3 bucket (`user-<your_UserId>-bucket`).
+### Milestone 7 - "Stream Processing: AWS Kinesis."
+> - Create Data Stream with Kinesis
+> - Configure an API with Kinesis Proxy Integration
+> - Send data to Kinesis and read to Databricks
+> - Transform Kinesis stream in Databricks and Write to Delta Tables
 
 
-test
+<!-- ## M1 - Batch Processing: Configure the EC2 Kafka client.
+
+### Creating .pem file
+
+### Connecting to EC2 Instance
+
+### Setting up Kafka on EC2 Instance
+
+### Creating Kafka Topics
+
+
+## M2 - Batch Processing: Connect a MSK cluster to a S3 Bucket.
+
+### Creating custom plugin, MSK Connect
+
+### Creating connector, MSK Connect
+
+
+## M3 - Batch Processing: Configuring an API in API Gateway.
+
+### Building a Kafka REST proxy integration method for the API
+
+### Setting up the Kafka REST proxy on EC2 Instance 
+
+### Sending Data to API
+
+
+## M4 - Batch Processing: Databricks.
+
+### Setting up DataBricks
+
+### Mounting S3 Bucket 
+
+
+## M5 - Batch Processing: Spark on Databricks.
+
+### Cleaning the Pinterest Posts Dataframe
+
+### Cleaning the Geolocation Dataframe
+
+### Cleaning the User Dataframe
+
+### Task 1: Find the most popular category in each country.
+
+### Task 2: Find which was the most popular category each year.
+
+### Task 3: Find the user with more followers in each country.
+
+### Task 4: Find the most popular category for different age groups.
+
+### Task 5: Find the median follower count for different age groups.
+
+### Task 6: Find jow many users have joined each year.
+
+### Task 7: Find the median follower count of users based on their joining year. 
+
+### Task 8: Find the median follower count of users band on their joining year and age group.
+
+
+## M6 - Batch Processing: AWS MWAA.
+
+### Creating and uploading DAG to MWAA environment
+
+### Triggering the DAG to run Databricks Notebook
+
+
+## M7 - Stream Processing: AWS Kinesis.
+
+### Creating data streams with Kinesis
+
+### Configuring an API with Kinesis proxy integration
+
+### Sending data to Kinesis streams
+
+### Reading data from Kinesis stream in Databricks
+
+### Transform Kinesis streams in Databricks
+
+### Writing the streaming data to Delta Tables -->
 
 
 
