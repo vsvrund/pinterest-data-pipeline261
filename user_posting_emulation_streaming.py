@@ -39,17 +39,17 @@ def run_infinite_post_data_loop():
 
         with engine.connect() as connection:
 
-            pin_string = text(f"SELECT * FROM pinterest_data LIMIT {random_row}, 1")
-            pin_selected_row = connection.execute(pin_string)
+            #pin_string = text(f"SELECT * FROM pinterest_data LIMIT {random_row}, 1")
+            #pin_selected_row = connection.execute(pin_string)
             
-            for row in pin_selected_row:
-                pin_result = dict(row._mapping)
+            #for row in pin_selected_row:
+                #pin_result = dict(row._mapping)
 
-            geo_string = text(f"SELECT * FROM geolocation_data LIMIT {random_row}, 1")
-            geo_selected_row = connection.execute(geo_string)
+            #geo_string = text(f"SELECT * FROM geolocation_data LIMIT {random_row}, 1")
+            #geo_selected_row = connection.execute(geo_string)
             
-            for row in geo_selected_row:
-                geo_result = dict(row._mapping)
+            #for row in geo_selected_row:
+            #    geo_result = dict(row._mapping)
 
             user_string = text(f"SELECT * FROM user_data LIMIT {random_row}, 1")
             user_selected_row = connection.execute(user_string)
@@ -58,8 +58,8 @@ def run_infinite_post_data_loop():
                 user_result = dict(row._mapping)
 
 
-            pin_result = {k: str(v) if isinstance(v, datetime.datetime) else v for k, v in pin_result.items()}
-            geo_result = {k: v.strftime("%Y-%m-%d %H:%M:%S") if isinstance(v, datetime.datetime) else v for k, v in geo_result.items()}
+            #pin_result = {k: str(v) if isinstance(v, datetime.datetime) else v for k, v in pin_result.items()}
+            #geo_result = {k: v.strftime("%Y-%m-%d %H:%M:%S") if isinstance(v, datetime.datetime) else v for k, v in geo_result.items()}
             user_result = {k: str(v) if isinstance(v, datetime.datetime) else v for k, v in user_result.items()}
 
 
@@ -67,41 +67,42 @@ def run_infinite_post_data_loop():
             
             example_df = {"index": 1, "name": "Maya", "age": 25, "role": "engineer"}
 
-            invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/streams/streaming-0a1e5630c127-pin/record"
+            #invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/streams/streaming-0a1e5630c127-pin/record"
             #To send JSON messages you need to follow this structure
-            payload = json.dumps({
-                "stream-name": "YourStreamName",
-                "records":{
+            #payload = json.dumps({
+               # "stream-name": "YourStreamName",
+               # "Data":{
                     #Data should be send as pairs of column_name:value, with different columns separated by commas       
-                    "value": pin_result
-                    },
+               #     "value": pin_result
+              #      },
                     
                 
-               "PartitionKey": "desired-name"
-                })
-            headers = {'Content-Type': 'application/json'}
-            response = requests.request("PUT", invoke_url, headers=headers, data=payload)
+                   
+             #  "PartitionKey": "desired-name"
+            #}, default=str)
+            #headers = {'Content-Type': 'application/json'}
+            #response = requests.request("PUT", invoke_url, headers=headers, data=payload)
 
 
-            invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/streams/streaming-0a1e5630c127-geo/record"
-            payload = json.dumps({
-                "stream-name": "YourStreamName",
-                "records": {
+            #invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/streams/streaming-0a1e5630c127-geo/record"
+            #payload = json.dumps({
+                #"stream-name": "YourStreamName",
+                #"Data": {
                     #Data should be send as pairs of column_name:value, with different columns separated by commas       
-                    "value": geo_result
-                    },
+                #    "value": geo_result
+               #     },
                     
                 
-                "PartitionKey": "desired-name"
-                }, default=str)
+              #  "PartitionKey": "desired-name"
+             #   }, default=str)
 
-            headers = {'Content-Type': 'application/json'}
-            response = requests.request("PUT", invoke_url, headers=headers, data=payload)
+            #headers = {'Content-Type': 'application/json'}
+            #response = requests.request("PUT", invoke_url, headers=headers, data=payload)
 
             invoke_url = "https://s3r2ivz473.execute-api.us-east-1.amazonaws.com/dev/streams/streaming-0a1e5630c127-user/record"
             payload = json.dumps({
                 "stream-name": "YourStreamName",
-                "records":{
+                "Data":{
                     #Data should be send as pairs of column_name:value, with different columns separated by commas       
                     "value": user_result
                     },
