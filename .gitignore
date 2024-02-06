@@ -1,0 +1,5 @@
+# Ignore credentials file
+0a1e5630c127-key-pair.pem
+
+# Ignore all files in the 'secrets' directory
+secrets/
